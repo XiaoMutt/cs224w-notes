@@ -57,7 +57,7 @@ Note:
 
 ![influence_set](../assets/img/influence_maximization_influence_set.png?style=centerme)
 
-*Red-colored nodes a and b are active. The two green areas enclose the the nodes activated by a and b respectively, i.e. $$X_{a}$$ and $$X_{b}$$.*
+*Red-colored nodes a and b are active. The two green areas enclose the nodes activated by a and b respectively, i.e. $$X_{a}$$ and $$X_{b}$$.*
 
 Note:
 - It is clear that $$f(S)$$ is the size of the union of $$X_{u}$$: $$f(S)=\mid\cup_{u\in S}X_{u}\mid$$.
