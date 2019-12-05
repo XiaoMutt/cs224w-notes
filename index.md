@@ -19,8 +19,8 @@ Starting with the Fall 2019 offering of CS 224W, the course covers three broad t
 
 1. [Structural Roles in Networks](): RolX, Granovetter, the Louvain algorithm
 2. [Spectral Clustering](network-methods/spectral-clustering): Graph partitions and cuts, the Laplacian, and motif clustering
-3. [Influence Maximization](network-methods/influence_maximization): Influential sets, submodularity, hill climbing
-4. [Outbreak Detection](): CELF, lazy hill climbing
+3. [Influence Maximization](network-methods/influence-maximization): Influential sets, submodularity, hill climbing
+4. [Outbreak Detection](network-methods/outbreak-detection): CELF, lazy hill climbing
 5. [Link Analysis](): PageRank and SimRank
 6. [Network Effects and Cascading Behavior](network-methods/network-effects-and-cascading-behavior): Decision-based diffusion, probabilistic contagion, SEIZ
 7. [Network Robustness](): Power laws, preferential attachment
