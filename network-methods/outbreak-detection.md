@@ -13,7 +13,7 @@ The following figure shows the different effects of placing sensors at two diffe
 
 ## Problem Setup
 The outbreak detection problem is defined as below:
-- Given: a graph $$G(V,E)$$ and data on how outbreaks spread over this $$G$$ (for each outbreak $$i$$ we knew the time $$T(u,i)$$ when the outbreak $$i$$ contaminates node $$u$$).
+- Given: a graph $$G(V,E)$$ and data on how outbreaks spread over this $$G$$ (for each outbreak $$i$$, we knew the time $$T(u,i)$$ when the outbreak $$i$$ contaminates node $$u$$).
 - Goal: select a subset of nodes $$S$$ that maximize the expected reward:
 
 $$
@@ -21,14 +21,14 @@ $$
 $$
 
 $$
-\text{subject to }cost(S)\leq B
+\text{subject to cost }c(S)\leq B
 $$
 
 where
 
 - $$p(i)$$: probability of outbreak $$i$$ occurring
 - $$f_{i}(S)$$: rewarding for detecting outbreak $$i$$ using "sensors" $$S$${% include sidenote.html id='note-outbreak-detection-problem-setup' note='It is obvious that $$p(i)\cdot f_{i}(S)$$ is the expected reward for detecting the outbreak $$i$$' %}
-- $$B$$ total budget of placing "sensors"
+- $$B$$: total budget of placing "sensors"
 
 
 **The Reward** can be one of the following three:
@@ -40,13 +40,13 @@ where
 **The Cost** is context-dependent. Examples are:
 
 - Reading big blogs is more time consuming
-- Placing a sensor in a remote location is expensive
+- Placing a sensor in a remote location is more expensive
 
 ## Outbreak Detection Formalization
 
 ### Objective Function for Sensor Placements
 
-Define a **penalty $$\pi_{i}(t)$$** for detecting outbreak $$i$$ at time $$t$$, which can be one of the following:{% include sidenote.html id='note-outbreak-detection-penalty-note' note='Notice: in all the three cases detecting sooner does not hurt! Formally, this means, for all three cases, $$\pi_{i}(t)$$ is monotonically nondecreasing in $$t$$.'%}
+Define the **penalty $$\pi_{i}(t)$$** for detecting outbreak $$i$$ at time $$t$$, which can be one of the following:{% include sidenote.html id='note-outbreak-detection-penalty-note' note='Notice: in all the three cases detecting sooner does not hurt! Formally, this means, for all three cases, $$\pi_{i}(t)$$ is monotonically nondecreasing in $$t$$.'%}
 
 - **Time to Detection (DT)**
   - How long does it take to detect an outbreak?
@@ -54,7 +54,7 @@ Define a **penalty $$\pi_{i}(t)$$** for detecting outbreak $$i$$ at time $$t$$, 
 
 - **Detection Likelihood (DL)**
   - How many outbreaks do we detect?
-  - Penalty for detecting at time $$t$$: $$\pi_{i}(0)=0$$, $$\pi_{i}(\infty)=1$${% include sidenote.html id='note-penalty-dl' note='this is a binary outcome:  $$\pi_{i}(0)=0$$ means we detect the outbreak and we pay 0 penalty, while $$\pi_{i}(\infty)=1$$ means we fail to detect the outbreak and we pay 1 penalty.'%}
+  - Penalty for detecting at time $$t$$: $$\pi_{i}(0)=0$$, $$\pi_{i}(\infty)=1$${% include sidenote.html id='note-penalty-dl' note='this is a binary outcome:  $$\pi_{i}(0)=0$$ means we detect the outbreak and we pay 0 penalty, while $$\pi_{i}(\infty)=1$$ means we fail to detect the outbreak and we pay 1 penalty. That is we do not incur any penalty if we detect the outbreak in finite time, otherwise we incur penalty 1.'%}
 
 - **Population Affected (PA)**
   - How many people/nodes get infected during an outbreak?
@@ -72,14 +72,13 @@ where $$T(S,i)$$ is the time when the set of "sensors" $$S$$ detects the outbrea
 For all $$A\subseteq B\subseteq V$$ ($$V$$ is all the nodes in $$G$$), $$T(A,i)\geq T(B,i)$$, and
 
 $$
-f_{i}(A)-f_{i}(B)=\pi_{i}(\infty)-\pi_{i}(T(A,i))-[\pi_{i}(\infty)-\pi_{i}(T(B,i))]
+\begin{align*}
+f_{i}(A)-f_{i}(B)&=\pi_{i}(\infty)-\pi_{i}(T(A,i))-[\pi_{i}(\infty)-\pi_{i}(T(B,i))]\\
+&=\pi_{i}(T(B,i))-\pi_{i}(T(A,i))
+\end{align*}
 $$
 
-$$
-=\pi_{i}(T(B,i))-\pi_{i}(T(A,i))
-$$
-
-Because, $$\pi_{i}(t)$$ is monotonically nondecreasing in $$t$$ (see sidenote 2), $$f_{i}(A)-f_{i}(B)<0$$. Therefore, $$f_{i}(S)$$ is nondecreasing.
+Because $$\pi_{i}(t)$$ is monotonically nondecreasing in $$t$$ (see sidenote 2), $$f_{i}(A)-f_{i}(B)<0$$. Therefore, $$f_{i}(S)$$ is nondecreasing.
 
 Then, it is obvious that $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is also nondecreasing, since $$p(i)\geq 0$$.
 
@@ -93,15 +92,15 @@ $$
 
 There are three cases when sensor $$x$$ detects the outbreak $$i$$:
 1. $$T(B,i)\leq T(A, i)<T(x,i)$$ ($$x$$ detects late): nobody benefits. That is $$f_{i}(A\cup\{x\})=f_{i}(A)$$ and $$f_{i}(B\cup\{x\})=f_{i}(B)$$. Therefore, $$f(A\cup \{x\})-f(A)=0= f(B\cup\{x\})-f(B)$$
-2. $$T(B, i\leq T(x, i)<T(A,i))$$ ($$x$$ detects after $$B$$ but before $$A$$):so $$x$$ only helps to improve the solution of $$A$$ but not $$B$$. Therefore, $$f(A\cup \{x\})-f(A)\geq 0 = f(B\cup\{x\})-f(B)$$
+2. $$T(B, i)\leq T(x, i)<T(A,i)$$ ($$x$$ detects after $$B$$ but before $$A$$): $$x$$ only helps to improve the solution of $$A$$ but not $$B$$. Therefore, $$f(A\cup \{x\})-f(A)\geq 0 = f(B\cup\{x\})-f(B)$$
 3. $$T(x, i)<T(B,i)\leq T(A,i)$$ ($$x$$ detects early): $$f(A\cup \{x\})-f(A)=[\pi_{i}(\infty)-\pi_{i}(T(x,t))]-f_{i}(A)$$$$ \geq [\pi_{i}(\infty)-\pi_{i}(T(x,t))]-f_{i}(B) = f(B\cup\{x\})-f(B)$${% include sidenote.html id='note-submodularity-proof1' note='Inequality is due to the nondecreasingness of $$f_{i}(\cdot)$$, i.e. $$f_{i}(A)\leq f_{i}(B)$$ (see Claim1).'%}
 
 Therefore, $$f_{i}(S)$$ is submodular. Because $$p(i)\geq 0$$, $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is also submodular.{% include sidenote.html id='note-submodularity-proof1' note='Fact: a non-negative linear combination of submodular functions is a submodular function.'%}
 
-We know that the Hill Climbing Algorithm works for optimizing problems with nondecreasing submodular objectives. However, it does not work well in this problem:
+We know that the Hill Climbing algorithm works for optimizing problems with nondecreasing submodular objectives. However, it does not work well in this problem:
 
 - Hill Climbing only works for the cases that each sensor costs the same. For this problem, each sensor has cost $$c(s)$$.
-- Hill Climbing is also slow: at each iteration, we need to re-evaluate marginal gains of all nodes.
+- Hill Climbing is also slow: at each iteration, we need to re-evaluate marginal gains of all nodes. The run time is $$O(\mid V\mid\cdot k)$$ for placing $$k$$ sensors.
 
 Hence, we need a new fast algorithm that can handle cost constraints.
 
@@ -121,10 +120,10 @@ Hence, we need a new fast algorithm that can handle cost constraints.
 
 ### Bad Algorithm 2: optimization using benefit-cost ratio
 **Algorithm**
-- Greedily pick the sensor $$s_{i}$$ that maximizes the benefit to cost ratio until the budget runs out. That is always pick
+- Greedily pick the sensor $$s_{i}$$ that maximizes the benefit to cost ratio until the budget runs out, i.e. always pick
 
 $$
-s_{i}=\arg\max_{s\in(V\setminus A)}\frac{f(A_{i-1}\cup\{s\})-f(A_{i-1})}{c(s)}
+s_{i}=\arg\max_{s\in(V\setminus A_{i-1})}\frac{f(A_{i-1}\cup\{s\})-f(A_{i-1})}{c(s)}
 $$
 
 **This can fail arbitrarily bad!** Example:
@@ -148,7 +147,7 @@ CELF also uses a lazy evaluation of $$f(S)$$ (see below) to speedup Hill Climbin
 ## Lazy Hill Climbing: Speedup Hill Climbing
 
 ### Intuition
-- In Hill Climbing, in round $$i+1$$, we have picked $$S_{i}=\{S_{1},...,S_{i}\}$$ sensors. Now pick $$s_{i+1}=\arg\max_{u}f(S_{i}\cup \{u\})-f(S_{i})$$
+- In Hill Climbing, in round $$i+1$$, we have picked $$S_{i}=\{S_{1},...,S_{i}\}$$ sensors. Now, pick $$s_{i+1}=\arg\max_{u}f(S_{i}\cup \{u\})-f(S_{i})$$
 - By submodularity $$f(S_{i}\cup\{u\})-f(S_{i})\geq f(S_{j}\cup\{u\})-f(S_{j})$$ for $$i<j$$.
 - Let $$\delta_{i}(u)=f(S_{i}\cup\{u\})-f(S_{i})$$ and $$\delta_{j}(u)=f(S_{j}\cup\{u\})-f(S_{j})$$ be the marginal gains. Then, we can use $$\delta_{i}$$ as upper bound on $$\delta_{j}$$ for ($$j>i$$)
 
@@ -161,9 +160,9 @@ The following figure show the process.
 
 ![lazy_evaluation](../assets/img/outbreak_detection_lazy_evaluation.png?style=centerme)
 
-*(A) Evaluate and pick the largest marginal gain $$\delta$$. (B) reorder the marginal gain for each sensor in decreasing order of the $$\delta$$s. (C) Re-evaluate the $$\delta$$s in order and pick the possible best one by using previous $$\delta$$s as upper bounds. (D) Reorder and repeat.*
+*(A) Evaluate and pick the node with the largest marginal gain $$\delta$$. (B) reorder the marginal gain for each sensor in decreasing order. (C) Re-evaluate the $$\delta$$s in order and pick the possible best one by using previous $$\delta$$s as upper bounds. (D) Reorder and repeat.*
 
-Note: the worst case of Hill Climbing has the same time complexity as normal Hill Climbing. However, in practice it is on average much faster.
+Note: the worst case of Lazy Hill Climbing has the same time complexity as normal Hill Climbing. However, it is on average much faster in practice.
 
 ## Data-Dependent Bound on the Solution Quality
 
@@ -172,7 +171,7 @@ Note: the worst case of Hill Climbing has the same time complexity as normal Hil
 - On "easy data", Hill Climbing may do better than the $$(1-\frac{1}{e})$$ bound for submodular functions
 
 ### Data-Dependent Bound
-Suppose $$S$$ is some solution to $$f(S)$$ subjected to $$\mid S \mid\leq k$$, and $$f(S)$$ is monotonically nondecreasing and submodular.
+Suppose $$S$$ is some solution to $$f(S)$$ subjected to $$\mid S \mid\leq k$$, and $$f(S)$$ is monotone and submodular.
 
 - Let $$OPT={t_{i},...,t_{k}}$$ be the optimal solution
 - For each $$u$$ let $$\delta(u)=f(S\cup\{u\})-f(S)$$
@@ -193,5 +192,5 @@ $$
 
 Note:
 
-- This bound hold for the solution $$S$$ (subjected to $$\mid S \mid\leq k$$) of any algorithm having the objective function $$f(S)$$ monotonically nondecreasing and submodular.
+- This bound hold for the solution $$S$$ (subjected to $$\mid S \mid\leq k$$) of any algorithm having the objective function $$f(S)$$ monotone and submodular.
 - The bound is data-dependent, and for some inputs it can be very "loose" (worse than $$(1-\frac{1}{e})$$)
