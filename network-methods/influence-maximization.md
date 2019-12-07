@@ -4,7 +4,7 @@ title: Influence Maximization
 ---
 
 ## Motivation
-Identification of influential nodes in a network has important practical uses. A good example is "viral marketing", a strategy that uses existing social networks to spread and promote a product. A well-engineered viral marking will identify the most influential customers, convince them to adopt and endorse the product, and then spread the product in the social network like a virus.
+Identification of influential nodes in a network has important practical uses. A good example is "viral marketing", a strategy that uses existing social networks to spread and promote a product. A well-engineered viral marking compaign will identify the most influential customers, convince them to adopt and endorse the product, and then spread the product in the social network like a virus.
 
 The key question is how to find the most influential set of nodes? To answer this question, we will first look at two classical cascade models:
 
@@ -70,7 +70,7 @@ $$
 \max_{S \text{ of size }k}f(S)
 $$
 
-This problem is NP-hard [[Kempe et al. 2003]](https://www.cs.cornell.edu/home/kleinber/kdd03-inf.pdf). However, a greedy approximation algorithm--**Hill Climbing**--exists. Hill Climbing will find a set $$S$$ that
+This problem is NP-hard [[Kempe et al. 2003]](https://www.cs.cornell.edu/home/kleinber/kdd03-inf.pdf). However, there is a greedy approximation algorithm--**Hill Climbing** that gives a solution $$S$$ with the following approximation guarantee:
 
 $$
 f(S)\geq(1-\frac{1}{e})f(OPT)
@@ -89,21 +89,29 @@ where $$OPT$$ is the globally optimal solution.
 **Claim:** Hill Climbing produces a solution that has the approximation guarantee $$f(S)\geq(1-\frac{1}{e})f(OPT)$$.
 
 ### Proof of the Approximation Guarantee of Hill Climbing
+**Definition of Monotone:** if $$f(\emptyset)=0$$ and $$f(S)\leq f(T)$$ for all $$S\subseteq T$$, then $$f(\cdot)$$ is monotone.
+
+**Definition of Submodular:** if $$f(S\cup \{u\})-f(S)\geq f(T\cup\{u\})-f(T)$$ for any node $$u$$ and any $$S\subseteq T$$, then $$f(\cdot)$$ is submodular.
+
 **Theorem [Nemhauser et al. 1978]:**{% include sidenote.html id='note-nemhauser-theorem' note='also see this [handout](http://web.stanford.edu/class/cs224w/handouts/CS224W_Influence_Maximization_Handout.pdf)' %} if $$f(\cdot)$$ is **monotone** and **submodular**, then the $$S$$ obtained by greedily adding $$k$$ elements that maximize marginal gains satisfies
 
 $$
 f(S)\geq(1-\frac{1}{e})f(OPT)
 $$
 
-Given this theorem, we need to prove that the largest expected cascade size function $$f(\cdot)$$ is monotone and submodular. It is clear that the function $$f(\cdot)$$ is monotone based on the definition{% include sidenote.html id='note-monotone' note='$$f(U)\leq f(V)$$ if $$U\subseteq V$$, i.e. activating more nodes does not hurt.' %} and we only need to prove $$f(\cdot)$$ is submodular.
+Given this theorem, we need to prove that the largest expected cascade size function $$f(\cdot)$$ is monotone and submodular.
 
-**Fact1 of Submodular Functions:** $$f(S)=\mid \cup_{k\in S}X_{k}\mid$$ is submodular, where $$X_{k}$$ is a set. Intuitively, the more sets you already have, the less new "area", a newly added set $$X_{k}$$ will provide.
+**It is clear that the function $$f(\cdot)$$ is monotone based on the definition of $$f(\cdot)$${% include sidenote.html id='note-monotone' note='If no nodes are active, then the influence is 0. That is $$f(\emptyset)=0$$. Because activating more nodes will never hurt the influence, $$f(U)\leq f(V)$$ if $$U\subseteq V$$.' %}, and we only need to prove $$f(\cdot)$$ is submodular.**
 
-**Fact2 of Submodular Functions:** if $$f_{i}(\cdot)$$ are submodular and $$c_{i}\geq0$$, then $$F(\cdot)=\sum_{i}c_{i} f_{i}(\cdot)$$ is also submodular. That is a non-negative linear combination of submodular functions is a submodular function.
+**Fact 1 of Submodular Functions:** $$f(S)=\mid \cup_{k\in S}X_{k}\mid$$ is submodular, where $$X_{k}$$ is a set. Intuitively, the more sets you already have, the less new "area", a newly added set $$X_{k}$$ will provide.
 
-**Proof that $$f(\cdot)$$ is Submodular**: we run many simulations on graph G (see sidenote 1). For the simulated world $$i$$, the node $$v$$ has an activation set $$X^{i}_{v}$$, then $$f_{i}(S)=\mid\cup_{v\in S}X^{i}_{v}\mid$$ is the size of the cascades of $$S$$ for world $$i$$. Based on Fact1, $$f_{i}(S)$$ is submodular. The expected influence set size $$f(S)=\frac{1}{\mid I\mid}\sum_{i\in I}f_{i}(S)$$ is also submodular, due to Fact2. QED.
+**Fact 2 of Submodular Functions:** if $$f_{i}(\cdot)$$ are submodular and $$c_{i}\geq0$$, then $$F(\cdot)=\sum_{i}c_{i} f_{i}(\cdot)$$ is also submodular. That is a non-negative linear combination of submodular functions is a submodular function.
 
-**Evaluation of $$f(S)$$ and Approximation Guarantee of Hill Climbing In Practice:** how to evaluate $$f(S)$$ is still an open question. However, it is a very good estimation by simulating a number of possible worlds (see sidenote 1):
+**Proof that $$f(\cdot)$$ is Submodular**: we run many simulations on graph G (see sidenote 1). For the simulated world $$i$$, the node $$v$$ has an activation set $$X^{i}_{v}$$, then $$f_{i}(S)=\mid\cup_{v\in S}X^{i}_{v}\mid$$ is the size of the cascades of $$S$$ for world $$i$$. Based on Fact 1, $$f_{i}(S)$$ is submodular. The expected influence set size $$f(S)=\frac{1}{\mid I\mid}\sum_{i\in I}f_{i}(S)$$ is also submodular, due to Fact 2. QED.
+
+**Evaluation of $$f(S)$$ and Approximation Guarantee of Hill Climbing In Practice:** how to evaluate $$f(S)$$ is still an open question. The estimation achieved by simulating a number of possible worlds is a good enough evaluation [[Kempe et al. 2003]](https://www.cs.cornell.edu/home/kleinber/kdd03-inf.pdf):
+
+- Estimate $$f(S)$$ by repeatedly simulating $$\Omega(n^{\frac{1}{\epsilon}})$$ possible worlds, where $$n$$ is the number of nodes and $$\epsilon$$ is a small positive real number
 - It achieves $$(1\pm \epsilon)$$-approximation to $$f(S)$$
 - Hill Climbing is now a $$(1-\frac{1}{e}-\epsilon)$$-approximation
 
