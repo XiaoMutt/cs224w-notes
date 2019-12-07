@@ -68,8 +68,10 @@ $$
 
 where $$T(S,i)$$ is the time when the set of "sensors" $$S$$ detects the outbreak $$i$$.
 
-### Claim1: $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is nondecreasing
-For all $$A\subseteq B\subseteq V$$ ($$V$$ is all the nodes in $$G$$), $$T(A,i)\geq T(B,i)$$, and
+### Claim 1: $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is monotone{% include sidenote.html id='note-monotone' note='For the definition of monotone, see [Influence Maximization](influence-maximization)' %}
+Firstly, we do not reduce the penalty, if we do not place any sensors. Therefore, $$f_{i}(\emptyset)=0$$ and $$f(\emptyset)=\sum_{i}p(i)\cdot f_{i}(\emptyset)=0$$.
+
+Secondly, for all $$A\subseteq B\subseteq V$$ ($$V$$ is all the nodes in $$G$$), $$T(A,i)\geq T(B,i)$$, and
 
 $$
 \begin{align*}
@@ -78,12 +80,12 @@ f_{i}(A)-f_{i}(B)&=\pi_{i}(\infty)-\pi_{i}(T(A,i))-[\pi_{i}(\infty)-\pi_{i}(T(B,
 \end{align*}
 $$
 
-Because $$\pi_{i}(t)$$ is monotonically nondecreasing in $$t$$ (see sidenote 2), $$f_{i}(A)-f_{i}(B)<0$$. Therefore, $$f_{i}(S)$$ is nondecreasing.
+Because $$\pi_{i}(t)$$ is monotonically nondecreasing in $$t$$ (see sidenote 2), $$f_{i}(A)-f_{i}(B)<0$$. Therefore, $$f_{i}(S)$$ is nondecreasing. It is obvious that $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is also nondecreasing, since $$p(i)\geq 0$$.
 
-Then, it is obvious that $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is also nondecreasing, since $$p(i)\geq 0$$.
+Hence, $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is monotone.
 
 
-### Claim2: $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is submodular
+### Claim 2: $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is submodular{% include sidenote.html id='note-submodular' note='For the definition of submodular, see [Influence Maximization](influence-maximization)' %}
 This is to proof for all $$A\subseteq B\subseteq V$$ $$x\in V \setminus B$$:
 
 $$
@@ -93,7 +95,7 @@ $$
 There are three cases when sensor $$x$$ detects the outbreak $$i$$:
 1. $$T(B,i)\leq T(A, i)<T(x,i)$$ ($$x$$ detects late): nobody benefits. That is $$f_{i}(A\cup\{x\})=f_{i}(A)$$ and $$f_{i}(B\cup\{x\})=f_{i}(B)$$. Therefore, $$f(A\cup \{x\})-f(A)=0= f(B\cup\{x\})-f(B)$$
 2. $$T(B, i)\leq T(x, i)<T(A,i)$$ ($$x$$ detects after $$B$$ but before $$A$$): $$x$$ only helps to improve the solution of $$A$$ but not $$B$$. Therefore, $$f(A\cup \{x\})-f(A)\geq 0 = f(B\cup\{x\})-f(B)$$
-3. $$T(x, i)<T(B,i)\leq T(A,i)$$ ($$x$$ detects early): $$f(A\cup \{x\})-f(A)=[\pi_{i}(\infty)-\pi_{i}(T(x,t))]-f_{i}(A)$$$$ \geq [\pi_{i}(\infty)-\pi_{i}(T(x,t))]-f_{i}(B) = f(B\cup\{x\})-f(B)$${% include sidenote.html id='note-submodularity-proof1' note='Inequality is due to the nondecreasingness of $$f_{i}(\cdot)$$, i.e. $$f_{i}(A)\leq f_{i}(B)$$ (see Claim1).'%}
+3. $$T(x, i)<T(B,i)\leq T(A,i)$$ ($$x$$ detects early): $$f(A\cup \{x\})-f(A)=[\pi_{i}(\infty)-\pi_{i}(T(x,t))]-f_{i}(A)$$$$ \geq [\pi_{i}(\infty)-\pi_{i}(T(x,t))]-f_{i}(B) = f(B\cup\{x\})-f(B)$${% include sidenote.html id='note-submodularity-proof1' note='Inequality is due to the nondecreasingness of $$f_{i}(\cdot)$$, i.e. $$f_{i}(A)\leq f_{i}(B)$$ (see Claim 1).'%}
 
 Therefore, $$f_{i}(S)$$ is submodular. Because $$p(i)\geq 0$$, $$f(S)=\sum_{i}p(i)\cdot f_{i}(S)$$ is also submodular.{% include sidenote.html id='note-submodularity-proof1' note='Fact: a non-negative linear combination of submodular functions is a submodular function.'%}
 
@@ -178,7 +180,7 @@ Suppose $$S$$ is some solution to $$f(S)$$ subjected to $$\mid S \mid\leq k$$, a
 - Order $$\delta(u)$$ so that $$\delta(1)\geq \delta(2)\geq...$$
 - Then, the **data-dependent bound** is $$f(OPT)\leq f(S)+\sum^{k}_{i=1}\delta(i)$$
 
-Proof{% include sidenote.html id='note-data-dependent-bound-proof' note='For the first inequality, see [the lemma in 3.4.1 of this handout](http://web.stanford.edu/class/cs224w/handouts/CS224W_Influence_Maximization_Handout.pdf). For the last inequality in the proof: instead of taking $$t_{i}\in OPT$$ of benefit $$\delta(t_{i})$$, we take the best possible element $$\delta(i)$$, because we do not know $$t_{i}$$.'%}
+Proof:{% include sidenote.html id='note-data-dependent-bound-proof' note='For the first inequality, see [the lemma in 3.4.1 of this handout](http://web.stanford.edu/class/cs224w/handouts/CS224W_Influence_Maximization_Handout.pdf). For the last inequality in the proof: instead of taking $$t_{i}\in OPT$$ of benefit $$\delta(t_{i})$$, we take the best possible element $$\delta(i)$$, because we do not know $$t_{i}$$.'%}
 
 $$
 \begin{align*}
